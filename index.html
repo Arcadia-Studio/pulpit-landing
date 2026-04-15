@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulpit -- AI Sermon Research for Pastors</title>
+  <meta name="description" content="Search thousands of sermons, primary sources, and commentaries in seconds. Built by a pastor, for pastors.">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --ink-soft: #444;
+      --ink-mute: #777;
+      --paper: #faf7f2;
+      --paper-soft: #f2ede4;
+      --gold: #8a6c3b;
+      --gold-dark: #6b5330;
+      --border: #e3dcd0;
+    }
+
+    body {
+      font-family: Georgia, "Baskerville", "Times New Roman", serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    header {
+      padding: 48px 0 16px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      text-transform: uppercase;
+      font-family: "Baskerville", Georgia, serif;
+    }
+
+    .hero {
+      padding: 64px 0 48px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.15;
+      font-weight: 400;
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .subhead {
+      font-size: clamp(18px, 2.2vw, 21px);
+      color: var(--ink-soft);
+      margin-bottom: 40px;
+      font-style: italic;
+    }
+
+    .signup-form {
+      max-width: 480px;
+      margin: 0 auto 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .signup-form input[type="email"] {
+      flex: 1;
+      min-width: 240px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--ink);
+      border-radius: 2px;
+    }
+
+    .signup-form input[type="email"]:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .signup-form button {
+      padding: 14px 28px;
+      font-size: 16px;
+      font-family: inherit;
+      background: var(--gold);
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 2px;
+      letter-spacing: 0.02em;
+      transition: background 0.2s;
+    }
+
+    .signup-form button:hover {
+      background: var(--gold-dark);
+    }
+
+    .form-caption {
+      font-size: 14px;
+      color: var(--ink-mute);
+      margin-top: 12px;
+    }
+
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: var(--gold);
+      margin: 64px auto;
+    }
+
+    section {
+      padding: 32px 0;
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 24px;
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+
+    .prose {
+      font-size: 18px;
+      color: var(--ink-soft);
+      margin-bottom: 16px;
+    }
+
+    .prose p { margin-bottom: 18px; }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      margin: 32px 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      padding: 20px 0 20px 60px;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .steps li:last-child { border-bottom: none; }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 20px;
+      width: 40px;
+      height: 40px;
+      background: var(--paper-soft);
+      color: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+      font-family: Georgia, serif;
+    }
+
+    .steps h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .steps p {
+      color: var(--ink-soft);
+      font-size: 16px;
+    }
+
+    .examples {
+      background: var(--paper-soft);
+      padding: 32px;
+      border-radius: 4px;
+      margin: 32px 0;
+      border-left: 3px solid var(--gold);
+    }
+
+    .examples h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .examples ul {
+      list-style: none;
+    }
+
+    .examples li {
+      padding: 12px 0;
+      font-size: 17px;
+      font-style: italic;
+      color: var(--ink);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .examples li:last-child { border-bottom: none; }
+    .examples li::before { content: "\201C"; color: var(--gold); font-size: 24px; margin-right: 4px; }
+    .examples li::after { content: "\201D"; color: var(--gold); font-size: 24px; }
+
+    .byline {
+      text-align: center;
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    .byline .name {
+      font-size: 21px;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .byline .title {
+      font-size: 15px;
+      color: var(--ink-mute);
+      font-style: italic;
+      margin-bottom: 16px;
+    }
+
+    .byline .bio {
+      font-size: 16px;
+      color: var(--ink-soft);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 32px;
+      margin: 24px 0;
+      text-align: center;
+    }
+
+    .pricing-card .tier {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .pricing-card .price {
+      font-size: 40px;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .pricing-card .price small {
+      font-size: 18px;
+      color: var(--ink-mute);
+    }
+
+    .pricing-card .note {
+      font-size: 14px;
+      color: var(--ink-mute);
+      margin-top: 16px;
+    }
+
+    .final-cta {
+      background: var(--paper-soft);
+      padding: 64px 24px;
+      text-align: center;
+      margin: 48px -24px -48px;
+    }
+
+    .final-cta h2 {
+      margin-bottom: 12px;
+    }
+
+    .final-cta p {
+      color: var(--ink-soft);
+      margin-bottom: 24px;
+      font-size: 17px;
+    }
+
+    footer {
+      padding: 48px 0 32px;
+      text-align: center;
+      color: var(--ink-mute);
+      font-size: 14px;
+    }
+
+    .thank-you {
+      display: none;
+      background: #e7f0e2;
+      border: 1px solid #8ba67a;
+      padding: 24px;
+      margin: 16px auto;
+      max-width: 480px;
+      color: #3d5230;
+      border-radius: 2px;
+      text-align: center;
+    }
+
+    .thank-you.show { display: block; }
+
+    @media (max-width: 600px) {
+      header { padding: 24px 0 0; }
+      .hero { padding: 32px 0 24px; }
+      .signup-form button { width: 100%; }
+      .final-cta { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <div class="logo">Pulpit</div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <section class="hero">
+      <h1>Sermon prep should take five hours, not twenty-five.</h1>
+      <p class="subhead">AI-powered research grounded in thousands of real sermons and primary sources. Built by a pastor, for pastors.</p>
+
+      <form class="signup-form" id="signup" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <input type="email" name="email" placeholder="Your email" required aria-label="Email address">
+        <input type="hidden" name="_subject" value="Pulpit waitlist signup">
+        <button type="submit">Join the Founding Pastor List</button>
+      </form>
+
+      <p class="form-caption">First 100 subscribers lock in $19/month for life. No credit card for the waitlist.</p>
+
+      <div class="thank-you" id="thanks">
+        <strong>You're on the list.</strong><br>
+        We'll email you the moment the founding pastor seats open. No spam. Ever.
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section>
+      <h2>What Pulpit does</h2>
+      <div class="prose" style="text-align:center; max-width:640px; margin:0 auto;">
+        <p>Ask any sermon-prep question in plain English. Pulpit searches a curated corpus of sermons, commentaries, and primary sources, then gives you a direct answer with citations to the source text.</p>
+        <p>No hallucination. No generic ChatGPT theology. Every claim is traceable to a real document you can cite from the pulpit.</p>
+      </div>
+
+      <div class="examples">
+        <h3>Try asking things like:</h3>
+        <ul>
+          <li>Find me three expository sermons on Romans 8:28 from Reformed pastors before 1900.</li>
+          <li>What did the early church fathers say about the doctrine of predestination?</li>
+          <li>Give me five sermon illustrations about forgiveness that aren't trite or overused.</li>
+          <li>Summarize the difference between sanctification in Wesleyan vs. Reformed traditions.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li>
+          <h3>Ask any question</h3>
+          <p>Natural language, theological depth. Ask the way you'd ask a seasoned colleague who's read more than you have.</p>
+        </li>
+        <li>
+          <h3>Get grounded answers</h3>
+          <p>Pulpit retrieves from a real corpus of sermons and theological sources, then synthesizes a direct answer. Every paragraph cites its source.</p>
+        </li>
+        <li>
+          <h3>Cite with confidence</h3>
+          <p>Click any citation to read the original passage in context. No more wondering if the AI made it up. It didn't.</p>
+        </li>
+      </ol>
+    </section>
+
+    <div class="byline">
+      <div class="name">Dr. Peter J. Carter, Th.D.</div>
+      <div class="title">Pastor, theologian, builder</div>
+      <div class="bio">Pulpit is built on top of the Theology in Focus sermon archive, a decades-long collection of theological content Dr. Carter has assembled and indexed. He is a working pastor and knows what sermon prep actually feels like at 10pm on a Saturday.</div>
+    </div>
+
+    <section>
+      <h2>Founding pastor pricing</h2>
+
+      <div class="pricing-card">
+        <div class="tier">Founding Pastor</div>
+        <div class="price">$19<small>/month</small></div>
+        <p class="note">First 100 subscribers. Rate locked for life. Full access to everything.</p>
+      </div>
+
+      <p class="prose" style="text-align:center; font-size:15px; color:var(--ink-mute);">Standard pricing will be $29/month. Church plans start at $79/month for up to 5 pastors.</p>
+    </section>
+
+  </div>
+
+  <div class="final-cta">
+    <div class="container">
+      <h2>Get on the list</h2>
+      <p>Launching when the founding pastor list hits 100. That may be in two weeks.</p>
+
+      <form class="signup-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <input type="email" name="email" placeholder="Your email" required aria-label="Email address">
+        <input type="hidden" name="_subject" value="Pulpit waitlist signup (footer)">
+        <button type="submit">Reserve my $19/month rate</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      &copy; 2026 Pulpit. Built by <a href="mailto:hello@pulpit.ai" style="color:var(--gold);">Dr. Peter Carter</a>.
+    </div>
+  </footer>
+
+  <script>
+    // Intercept form submission, show thank you message
+    document.querySelectorAll('form.signup-form').forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            body: data,
+            headers: { 'Accept': 'application/json' }
+          });
+          if (res.ok) {
+            document.getElementById('thanks').classList.add('show');
+            form.reset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            form.submit(); // fallback
+          }
+        } catch (err) {
+          form.submit(); // fallback
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
